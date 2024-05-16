@@ -1,0 +1,14 @@
+env
+
+# Ignore __pycache__ directories
+__pycache__/
+*/__pycache__/
+
+# Ignore Django migrations
+*/migrations/*.pyc
+*/migrations/*.py
+!*/migrations/__init__.py
+
+# Ignore __pycache__ in pos/api/auth_view directory
+pos/api/auth_view/__pycache__/
+pos/api/main_view/__pycache__/
