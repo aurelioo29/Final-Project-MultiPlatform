@@ -1,12 +1,12 @@
 from django.contrib import admin
-from pos_app.models import User, StatusModel
-from pos_app.models import User, StatusModel, Profile, CarCategory, Car, Customer, Payment, InfoRent
+# from pos_app.models import User, StatusModel, Profile, CarCategory, Car, Customer, Payment, InfoRent
+from . import models
 # Register your models here.
-admin.site.register(User)
-admin.site.register(StatusModel)
-admin.site.register(Profile)
-admin.site.register(CarCategory)
-admin.site.register(Car)
-admin.site.register(Customer)
-admin.site.register(Payment)
-admin.site.register(InfoRent)
+admin.site.register(models.User)
+admin.site.register(models.StatusModel)
+admin.site.register(models.Profile)
+admin.site.register(models.CarCategory)
+admin.site.register(models.Car)
+admin.site.register(models.Customer)
+admin.site.register(models.Payment)
+admin.site.register(models.InfoRent)
