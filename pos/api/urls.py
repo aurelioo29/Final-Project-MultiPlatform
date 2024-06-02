@@ -16,9 +16,6 @@ urlpatterns = [
   path('api/payment', views.PaymentListApiView.as_view()),
   path('api/payment/<int:id>', views.PaymentDetailApiView.as_view()),
 
-  path('api/info-rent', views.InfoRentListApiView.as_view()),
-  path('api/info-rent/<int:id>', views.InfoRentDetailApiView.as_view()),
-
   path('api/register', views.RegisterUserApiView.as_view()),
   path('api/register/<int:id>', views.RegisterDetail.as_view()),
 
@@ -27,7 +24,6 @@ urlpatterns = [
   path('api/car-view', views.CarView.as_view()),
   path('api/category-car-view', views.CarCategoryView.as_view()),
   path('api/customer-view', views.CustomerView.as_view()),
-  path('api/info-rent-view', views.InfoRentView.as_view()),
   path('api/payment-view', views.PaymentView.as_view()),
 
   path('api/car-filter/', views.CarFilterApi.as_view()),
