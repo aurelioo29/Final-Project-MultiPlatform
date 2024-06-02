@@ -1,14 +1,9 @@
 from rest_framework import serializers
-from pos_app.models import User, StatusModel, Profile, CarCategory, Car, Customer, Payment, InfoRent
+from pos_app.models import User, StatusModel, Profile, CarCategory, Car, Booking, Payment
 from django.contrib.auth import authenticate # import authenticate for register feature
 from rest_framework.validators import UniqueValidator
 from django.core.exceptions import ValidationError
 from django.contrib.auth.password_validation import validate_password
-
-# class UserSerializer(serializers.ModelSerializer):
-#   class Meta:
-#     model = User
-#     fields = ('username', 'email')
 
 # static view
 class RegiserUserSerializer(serializers.ModelSerializer):
@@ -18,7 +13,7 @@ class RegiserUserSerializer(serializers.ModelSerializer):
   
   class Meta:
     model = User
-    fields = ['id', 'first_name', 'last_name', 'username', 'email', 'password1', 'password2', 'is_active', 'is_admin']
+    fields = ['id', 'first_name', 'last_name', 'username', 'email', 'password1', 'password2', 'is_active', 'is_admin', 'is_customer']
     extra_kwargs = {
       'username': {'required': True},
     }
@@ -38,6 +33,7 @@ class RegiserUserSerializer(serializers.ModelSerializer):
       email = validated_data['email'],
       is_active = validated_data['is_active'],
       # is_admin = validated_data['is_admin']
+      # is_customer = validated_data['is_customer']
     )
     user.set_password(validated_data['password1'])
     user.is_staff = validated_data.get('is_admin', False)
@@ -71,7 +67,7 @@ class LoginSerializer(serializers.Serializer):
 class ProfileSerializer(serializers.ModelSerializer):
   class Meta:
     model = Profile
-    fields = ('id', 'user', 'avatar', 'bio', 'status')
+    fields = ('id', 'user', 'phone_number', 'no_ktp', 'image_ktp', 'status')
 
 
 # main view
@@ -83,7 +79,7 @@ class CarCategorySerializer(serializers.ModelSerializer):
 class CarSerializer(serializers.ModelSerializer):
   class Meta:
     model = Car
-    fields = ('id', 'category', 'name', 'price',
+    fields = ('id', 'category', 'name_car', 'price_day',
               'fuel_type', 'baggage_capacity', 'seats',
               'plate_number', 'year', 'location_car',
               'image_car', 'rating', 'status_car', 'status'
@@ -91,19 +87,14 @@ class CarSerializer(serializers.ModelSerializer):
 
 class CustomerSerializer(serializers.ModelSerializer):
   class Meta: 
-    model = Customer
-    fields = ('id', 'no_ktp', 'name', 
-              'email', 'phone_number', 'image_ktp',
-              'location_pickup', 'duration', 'rent_type', 
-              'select_car', 'status'
+    model = Booking
+    fields = ('id', 'select_car', 'name_booking', 
+              'code_book', 'date_rental', 'date_return',
+              'location_pickup', 'quantity', 'rent_type', 
+              'status'
               )
 
 class PaymentSerializer(serializers.ModelSerializer):
   class Meta:
     model = Payment
     fields = ('id', 'customer', 'total_payment', 'payment_type', 'status')
-
-class InfoRentSerializer(serializers.ModelSerializer):
-  class Meta:
-    model = InfoRent
-    fields = ('id', 'code', 'customer', 'payment', 'date_rent', 'date_return', 'status')
