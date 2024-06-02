@@ -21,6 +21,7 @@ def compress_image(image, filename):
 # Create your models here.
 class User(AbstractUser):
   is_admin = models.BooleanField(default=False)
+  is_customer = models.BooleanField(default=False)
 
   def __str__(self):
     return str(self.username)
@@ -44,8 +45,9 @@ class StatusModel(models.Model):
 # ========================================================================================================
 class Profile(models.Model):
   user = models.OneToOneField(User, related_name='user_profile', on_delete=models.PROTECT)
-  avatar = models.ImageField(default = None, upload_to='profile_images/', blank=True, null=True)
-  bio = models.TextField(blank=True, null=True)
+  phone_number = models.CharField(max_length=15)
+  no_ktp = models.IntegerField(unique=True, default=0)
+  image_ktp = models.ImageField(default=None, upload_to='profile_images/', blank=True, null=True)
   status = models.ForeignKey(StatusModel, related_name='profile_status', default=StatusModel.objects.first().pk, on_delete=models.PROTECT)
   user_create = models.ForeignKey(User, related_name='user_create_profile', blank=True, null=True, on_delete=models.SET_NULL)
   user_update = models.ForeignKey(User, related_name='user_update_profile', blank=True, null=True, on_delete=models.SET_NULL)
@@ -57,19 +59,18 @@ class Profile(models.Model):
   
   def save(self, force_insert=False, force_update=False, using=None, update_fields=None, *args, **kwargs):
     if self.id:
-      try: 
+      try:
         this = Profile.objects.get(id=self.id)
-        if this.avatar != self.avatar:
-          var_avatar = self.avatar
-          self.avatar = compress_image(var_avatar, 'profile')
-          this.avatar.delete()
+        if this.image_ktp != self.image_ktp:
+          var_image_ktp = self.image_ktp
+          self.image_ktp = compress_image(var_image_ktp, 'ktp')
+          this.image_ktp.delete()
       except: pass
       super(Profile, self).save(*args, **kwargs)
-
     else:
-      if self.avatar:
-        var_avatar = self.avatar
-        self.avatar = compress_image(var_avatar, 'profile')
+      if self.image_ktp:
+        var_image_ktp = self.image_ktp
+        self.image_ktp = compress_image(var_image_ktp, 'ktp')
       super(Profile, self).save(*args, **kwargs)
 # ========================================================================================================
 class CarCategory(models.Model):
@@ -106,8 +107,8 @@ class Car(models.Model):
   )
 
   category = models.ForeignKey(CarCategory, related_name='car_category', on_delete=models.PROTECT)
-  name = models.CharField(max_length=100, unique=True)
-  price = models.DecimalField(max_digits=10, decimal_places=2)
+  name_car = models.CharField(max_length=100, unique=True)
+  price_day = models.DecimalField(max_digits=10, decimal_places=2)
   fuel_type = models.CharField(max_length=50, choices=fuel_choices, default='Bensin')
   baggage_capacity = models.IntegerField()
   seats = models.IntegerField()
@@ -142,21 +143,33 @@ class Car(models.Model):
         self.image_car = compress_image(var_image_car, 'car')
       super(Car, self).save(*args, **kwargs)
 # ========================================================================================================
-class Customer(models.Model):
+def generate_code_book():
+  last_code = Booking.objects.all().order_by('code').last()
+  if not last_code:
+    return 'BOK00001'
+  code = last_code.code
+  code_number = int(code[3:7])
+  new_code = code_number + 1
+  return 'BOK' + str(new_code).zfill(5)
+class Booking(models.Model):
   rent_choices = (
     ('With Driver', 'With Driver'),
     ('Without Driver', 'Without Driver')
   )
 
-  no_ktp = models.IntegerField(unique=True)
-  name = models.CharField(max_length=100)
-  email = models.EmailField(max_length=100, unique=True)
-  phone_number = models.CharField(max_length=15)
-  image_ktp = models.ImageField(default=None, upload_to='customer_images/', blank=True, null=True)
+  # no_ktp = models.IntegerField(unique=True)
+  # name = models.CharField(max_length=100)
+  # email = models.EmailField(max_length=100, unique=True)
+  # phone_number = models.CharField(max_length=15)
+  # image_ktp = models.ImageField(default=None, upload_to='customer_images/', blank=True, null=True)
+  select_car = models.ForeignKey(Car, related_name='car_booking', on_delete=models.PROTECT, default=1)
+  name_booking = models.ForeignKey(User, related_name='user_booking', on_delete=models.PROTECT)
+  code_book = models.CharField(max_length=20, editable=False, default=generate_code_book)
+  date_rental = models.DateTimeField()
+  date_return = models.DateTimeField()
   location_pickup = models.CharField(max_length=100)
-  duration = models.IntegerField()
+  quantity = models.IntegerField()
   rent_type = models.CharField(max_length=50, choices=rent_choices, default='With Driver')
-  select_car = models.ForeignKey(Car, related_name='car_customer', on_delete=models.PROTECT, default=1)
   status = models.ForeignKey(StatusModel, related_name='customer_status', default=StatusModel.objects.first().pk, on_delete=models.PROTECT)
   user_create = models.ForeignKey(User, related_name='user_create_customer', blank=True, null=True, on_delete=models.SET_NULL)
   user_update = models.ForeignKey(User, related_name='user_update_customer', blank=True, null=True, on_delete=models.SET_NULL)
@@ -165,29 +178,13 @@ class Customer(models.Model):
 
   def __str__(self):
     return str(self.name)
-
-  def save(self, force_insert=False, force_update=False, using=None, update_fields=None, *args, **kwargs):
-    if self.id:
-      try:
-        this = Customer.objects.get(id=self.id)
-        if this.image_ktp != self.image_ktp:
-          var_image_ktp = self.image_ktp
-          self.image_ktp = compress_image(var_image_ktp, 'ktp')
-          this.image_ktp.delete()
-      except: pass
-      super(Customer, self).save(*args, **kwargs)
-    else:
-      if self.image_ktp:
-        var_image_ktp = self.image_ktp
-        self.image_ktp = compress_image(var_image_ktp, 'ktp')
-      super(Customer, self).save(*args, **kwargs)
 # ========================================================================================================
 class Payment(models.Model):
   payment_choices = (
     ('Cash', 'Cash'),
   )
 
-  customer = models.ForeignKey(Customer, related_name='customer_payment', on_delete=models.PROTECT)
+  customer = models.ForeignKey(Booking, related_name='customer_payment', on_delete=models.PROTECT)
   total_payment = models.DecimalField(max_digits=10, decimal_places=2)
   payment_type = models.CharField(max_length=50, choices=payment_choices, default='None')
   status = models.ForeignKey(StatusModel, related_name='payment_status', default=StatusModel.objects.first().pk, on_delete=models.PROTECT)
@@ -198,29 +195,4 @@ class Payment(models.Model):
 
   def __str__(self):
     return str(self.customer) + ' - ' + str(self.total_payment)
-# ========================================================================================================
-def generate_code_rent():
-  last_code = InfoRent.objects.all().order_by('code').last()
-  if not last_code:
-    return 'BOK00001'
-  code = last_code.code
-  code_number = int(code[3:7])
-  new_code = code_number + 1
-  return 'BOK' + str(new_code).zfill(5)
-
-class InfoRent(models.Model):
-  code = models.CharField(max_length=20, editable=False, default=generate_code_rent)
-  # car = models.ForeignKey(Car, related_name='car_info_rent', on_delete=models.PROTECT)
-  customer = models.ForeignKey(Customer, related_name='customer_info_rent', on_delete=models.PROTECT)
-  payment = models.ForeignKey(Payment, related_name='payment_info_rent', on_delete=models.PROTECT)
-  date_rent = models.DateTimeField()
-  date_return = models.DateTimeField()
-  status = models.ForeignKey(StatusModel, related_name='info_rent_status', default=StatusModel.objects.first().pk, on_delete=models.PROTECT)
-  user_create = models.ForeignKey(User, related_name='user_create_info_rent', blank=True, null=True, on_delete=models.SET_NULL)
-  user_update = models.ForeignKey(User, related_name='user_update_info_rent', blank=True, null=True, on_delete=models.SET_NULL)
-  created_at = models.DateTimeField(auto_now_add=True)
-  last_update = models.DateTimeField(auto_now=True)
-
-  def __str__(self):
-    return self.kode
 # ========================================================================================================
