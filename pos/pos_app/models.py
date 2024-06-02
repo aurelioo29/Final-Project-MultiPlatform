@@ -45,7 +45,7 @@ class StatusModel(models.Model):
 # ========================================================================================================
 class Profile(models.Model):
   user = models.OneToOneField(User, related_name='user_profile', on_delete=models.PROTECT)
-  phone_number = models.CharField(max_length=15)
+  phone_number = models.CharField(max_length=15, default='None')
   no_ktp = models.IntegerField(unique=True, default=0)
   image_ktp = models.ImageField(default=None, upload_to='profile_images/', blank=True, null=True)
   status = models.ForeignKey(StatusModel, related_name='profile_status', default=StatusModel.objects.first().pk, on_delete=models.PROTECT)
