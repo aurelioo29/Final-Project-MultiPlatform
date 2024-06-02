@@ -314,7 +314,7 @@ class Migration(migrations.Migration):
                 (
                     "code",
                     models.CharField(
-                        default=pos_app.models.generate_code_rent,
+                        default=pos_app.models.generate_code_book,
                         editable=False,
                         max_length=20,
                     ),
