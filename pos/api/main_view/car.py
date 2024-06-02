@@ -15,8 +15,8 @@ class CarListApiView(APIView):
   def post(self, request, *args, **kwargs):
     data = {
       'category': request.data.get('category'),
-      'name': request.data.get('name'),
-      'price': request.data.get('price'),
+      'name_car': request.data.get('name_car'),
+      'name_car': request.data.get('name_car'),
       'fuel_type': request.data.get('fuel_type'),
       'baggage_capacity': request.data.get('baggage_capacity'),
       'seats': request.data.get('seats'),
@@ -77,8 +77,8 @@ class CarDetailApiView(APIView):
       )
     data = {
       'category': request.data.get('category'),
-      'name': request.data.get('name'),
-      'price': request.data.get('price'),
+      'name_car': request.data.get('name_car'),
+      'name_car': request.data.get('name_car'),
       'fuel_type': request.data.get('fuel_type'),
       'baggage_capacity': request.data.get('baggage_capacity'),
       'seats': request.data.get('seats'),

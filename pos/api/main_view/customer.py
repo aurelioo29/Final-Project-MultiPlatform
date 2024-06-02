@@ -2,27 +2,26 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import permissions
-from pos_app.models import Customer
+from pos_app.models import Booking
 from api.serializers import CustomerSerializer
 
 class CustomerListApiView(APIView):
   # method get
   def get(self, request, *args, **kwargs):
-    customers = Customer.objects.all()
+    customers = Booking.objects.all()
     serializer = CustomerSerializer(customers, many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
   
   # method post
   def post(self, request, *args, **kwargs):
     data = {
-      'no_ktp': request.data.get('no_ktp'),
-      'name': request.data.get('name'),
-      'email': request.data.get('email'),
-      'phone_number': request.data.get('phone_number'),
-      'location_pickup': request.data.get('location_pickup'),
-      'duration': request.data.get('duration'),
-      'rent_type': request.data.get('rent_type'),
       'select_car': request.data.get('select_car'),
+      'name_booking': request.data.get('name_booking'),
+      'date_rental': request.data.get('date_rental'),
+      'date_return': request.data.get('date_return'),
+      'location_pickup': request.data.get('location_pickup'),
+      'quantity': request.data.get('quantity'),
+      'rent_type': request.data.get('rent_type'),
     }
     serializer = CustomerSerializer(data=data)
     if serializer.is_valid():
@@ -39,8 +38,8 @@ class CustomerDetailApiView(APIView):
   # get object id
   def get_object(self, id):
     try:
-      return Customer.objects.get(id=id)
-    except Customer.DoesNotExist:
+      return Booking.objects.get(id=id)
+    except Booking.DoesNotExist:
       return None
   
   def get(self, request, id, *args, **kwargs):
@@ -74,15 +73,13 @@ class CustomerDetailApiView(APIView):
         }, status=status.HTTP_400_BAD_REQUEST
       )
     data = {
-      'no_ktp': request.data.get('no_ktp'),
-      'name': request.data.get('name'),
-      'email': request.data.get('email'),
-      'phone_number': request.data.get('phone_number'),
-      'image_ktp': request.data.get('image_ktp'),
-      'location_pickup': request.data.get('location_pickup'),
-      'duration': request.data.get('duration'),
-      'rent_type': request.data.get('rent_type'),
       'select_car': request.data.get('select_car'),
+      'name_booking': request.data.get('name_booking'),
+      'date_rental': request.data.get('date_rental'),
+      'date_return': request.data.get('date_return'),
+      'location_pickup': request.data.get('location_pickup'),
+      'quantity': request.data.get('quantity'),
+      'rent_type': request.data.get('rent_type'),
       'status': request.data.get('status')
     }
 

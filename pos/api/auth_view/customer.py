@@ -4,7 +4,7 @@ from rest_framework import status
 from rest_framework import permissions
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.permissions import IsAuthenticated, AllowAny
-from pos_app.models import Customer, StatusModel
+from pos_app.models import Booking, StatusModel
 from api.serializers import CustomerSerializer
 
 class CustomerView(APIView):
@@ -12,7 +12,7 @@ class CustomerView(APIView):
   permission_classes = [IsAuthenticated]
 
   def get(self, request, *args, **kwargs):
-    cars = Customer.objects.select_related('status').filter(status=StatusModel.objects.first())
+    cars = Booking.objects.select_related('status').filter(status=StatusModel.objects.first())
     serializer = CustomerSerializer(cars, many=True)
     response = {
         'status': status.HTTP_200_OK,
