@@ -22,3 +22,4 @@ from api.register_view.register import RegisterDetail
 # modules login user
 from api.login_view.login import LoginView
 
+from rest_framework.permissions import AllowAny

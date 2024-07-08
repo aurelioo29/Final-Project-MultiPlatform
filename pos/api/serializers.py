@@ -13,7 +13,7 @@ class RegiserUserSerializer(serializers.ModelSerializer):
   
   class Meta:
     model = User
-    fields = ['id', 'first_name', 'last_name', 'username', 'email', 'password1', 'password2', 'is_active', 'is_admin', 'is_customer']
+    fields = ['id', 'first_name', 'last_name', 'username', 'email', 'password1', 'password2', 'is_active', 'is_admin']
     extra_kwargs = {
       'username': {'required': True},
     }
@@ -32,8 +32,7 @@ class RegiserUserSerializer(serializers.ModelSerializer):
       username = validated_data['username'],
       email = validated_data['email'],
       is_active = validated_data['is_active'],
-      # is_admin = validated_data['is_admin']
-      # is_customer = validated_data['is_customer']
+      is_admin = validated_data['is_admin']
     )
     user.set_password(validated_data['password1'])
     user.is_staff = validated_data.get('is_admin', False)

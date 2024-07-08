@@ -7,9 +7,11 @@ from rest_framework.authtoken.models import Token
 from django.contrib.auth import login as django_login, logout as django_logout
 from django.http import HttpResponse, JsonResponse
 from api.serializers import LoginSerializer
+from rest_framework.permissions import AllowAny
 
 # handle login user
 class LoginView(APIView):
+  permission_classes = [AllowAny]
   serializer_class = LoginSerializer
 
   def post(self, request):
