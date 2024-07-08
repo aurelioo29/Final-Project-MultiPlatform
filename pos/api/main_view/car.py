@@ -16,7 +16,7 @@ class CarListApiView(APIView):
     data = {
       'category': request.data.get('category'),
       'name_car': request.data.get('name_car'),
-      'name_car': request.data.get('name_car'),
+      'price_day': request.data.get('price_day'),
       'fuel_type': request.data.get('fuel_type'),
       'baggage_capacity': request.data.get('baggage_capacity'),
       'seats': request.data.get('seats'),
@@ -78,7 +78,7 @@ class CarDetailApiView(APIView):
     data = {
       'category': request.data.get('category'),
       'name_car': request.data.get('name_car'),
-      'name_car': request.data.get('name_car'),
+      'price_day': request.data.get('price_day'),
       'fuel_type': request.data.get('fuel_type'),
       'baggage_capacity': request.data.get('baggage_capacity'),
       'seats': request.data.get('seats'),

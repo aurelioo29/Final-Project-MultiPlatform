@@ -116,7 +116,7 @@ class Car(models.Model):
   year = models.PositiveIntegerField()
   location_car = models.CharField(max_length=100)
   image_car = models.ImageField(default = None, upload_to='car_images/', blank=True, null=True)
-  rating = models.FloatField(default=0.0, blank=True, null=True)
+  rating = models.IntegerField(default=0, blank=True, null=True)
   status_car = models.CharField(max_length=50, choices=car_choices, default='Avalaible')
   status = models.ForeignKey(StatusModel, related_name='car_model_status', default=StatusModel.objects.first().pk, on_delete=models.PROTECT)
   user_create = models.ForeignKey(User, related_name='user_create_car', blank=True, null=True, on_delete=models.SET_NULL)
@@ -125,7 +125,7 @@ class Car(models.Model):
   last_update = models.DateTimeField(auto_now=True)
 
   def __str__(self):
-    return str(self.name) + ' with price ' + str(self.price)
+    return str(self.name_car) + ' with price ' + str(self.price_day)
   
   def save(self, force_insert=False, force_update=False, using=None, update_fields=None, *args, **kwargs):
     if self.id:
@@ -177,7 +177,7 @@ class Booking(models.Model):
   last_update = models.DateTimeField(auto_now=True)
 
   def __str__(self):
-    return str(self.name)
+    return str(self.name_booking)
 # ========================================================================================================
 class Payment(models.Model):
   payment_choices = (
